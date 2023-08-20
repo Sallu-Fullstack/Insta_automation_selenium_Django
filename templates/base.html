@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% comment %} <title><%= typeof title != 'undefined' ? title: 'Cooking Blog - Made with Node.js' %></title> {% endcomment %}
+  {% comment %} <title>{% typeof title != 'undefined' ? title: 'Cooking Blog - Made with Node.js' %}</title> {% endcomment %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+  <style>
+    .password-container {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        width: 20px;
+        height: 20px;
+        background-image: url("{% static 'img/eye.png' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+    .password-toggle.show {
+        background-image: url("{% static 'img/eye-slash.png' %}"); /* Replace with your eye-slash icon image */
+    }
+</style>
+
+
+</head>
+<body>
+  
+    <div class="container-xxl px-md-5 bg-white shadow-lg">
+
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <img src="{% static '/img/logo2.svg' %}" width="229" height="68" alt="Cooking Blog - Made with Django">
+      </a>
+
+      <ul class="nav col-10 col-md mb-2 justify-content-md-center justify-content-lg-start mb-md-0 pl-lg-5">
+        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+        <li><a href="/contact_us" class="nav-link px-2 link-secondary">Contact</a></li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle px-2 link-secondary" href="#" id="automationsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Automations
+            </a>
+            <div class="dropdown-menu" aria-labelledby="automationsDropdown">
+                <a class="dropdown-item" href="/schedule_posts">Schedule Posts</a>
+                <a class="dropdown-item" href="/multiple_likes">Multiple Likes</a>
+                <a class="dropdown-item" href="/share_to_followers">Share To Followers</a>
+                <!-- Add more submenu items as needed -->
+            </div>
+        </li>
+        <li class="nav-item ml-md-4">
+          {% if request.session.input_username %}
+            <a href="/user_login" class="nav-link px-2 link-secondary">
+              <i class="fa-solid fa-hand-wave"></i>Hi👋 {{ request.session.input_username }}
+            </a>
+          {% else %}
+            <a href="/user_login" class="nav-link px-2 link-secondary">Login <i class="bi bi-person-fill"></i></a>
+          {% endif %}
+        </li>
+        
+    </ul>
+    
+    
+    </header>
+
+
+    <main>
+      {% block main %}{% endblock main %}
+    </main>
+
+  
+
+    <footer class="py-5">
+      <div>
+          <p><i class="bi bi-code-slash"></i> Build by Sallu-Fullstack | <a href="https://github.com/Sallu-Fullstack" target="_blank"><i class="bi bi-github"></i></a></p>
+      </div>
+  </footer>
+  
+
+  </div>
+   <!-- Hidden input field to store the timezone offset -->
+   <input type="hidden" id="timezone-offset" value="">
+
+   <!-- Your JavaScript code to get the timezone offset and set it in the hidden input field -->
+   <script>
+       // Function to get the user's timezone offset in minutes
+       function getTimezoneOffset() {
+           return new Date().getTimezoneOffset();
+       }
+
+       // Get the timezone offset and set it in the hidden input field
+       const timezoneOffset = getTimezoneOffset();
+       document.getElementById('timezone-offset').value = timezoneOffset;
+
+       function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var passwordToggle = document.querySelector(".password-toggle");
+        
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passwordToggle.classList.remove("show"); // Change class here
+        } else {
+          passwordInput.type = "password";
+          passwordToggle.classList.add("show"); // Change class here
+        }
+      }
+   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

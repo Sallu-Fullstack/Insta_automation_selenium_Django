@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% elif message.tags == 'success' %}
+      <div class="alert alert-success mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% endif %}
+  {% endfor %}
+{% endif %}
+
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Gift <b>Multiple Likes</b> to your favourite instagram <b>Accounts</b>.</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead"><b>Note:</b>Please give the correct accurate name of the instagram account you want to interact with, Also the account should be public allowing you to like their posts and mention how many posts you want to like continuously.</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+  
+    <div class="col-8">
+        <form action="{% url 'multiple_likes' %}" id="postForm" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <label for="account_name" class="form-label">Account Username</label>
+                    <textarea name="account_name" id="account_name" placeholder="Enter the account name" class="form-control single-row-textarea" cols="30" rows="1" required></textarea>
+                  </div>
+
+                <div class="col-12">
+                    <label for="custom_delay" class="form-label">No of Posts</label>
+                    <input type="number" name="post_number" id="post_number" placeholder="Enter No.of Posts you want to like" class="form-control" min="1" step="1" required>
+                  </div>
+
+              <div class="col-12"> 
+                <button type="submit" class="btn btn-primary">Start Automation</button>
+                <p class="small mt-2 text-muted">Note: Once you start, A new chrome tab will get opened and start the automation. Don't click anywhere during automation.</p>
+              </div>
+            </div>
+          
+          </form>
+        </div>
+    </div>
+
+{% endblock main %}
+
+

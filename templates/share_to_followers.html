@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% elif message.tags == 'success' %}
+      <div class="alert alert-success mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% endif %}
+  {% endfor %}
+{% endif %}
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Share Post with Your Instagram Followers</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead">Boost your Instagram reach and elevate your follower engagement by effortlessly sharing your captivating posts with your entire audience.
+        <b>Note: </b>Enter the post URL and a custom message to share with your followers.</p>
+    </div>
+  </div>
+
+  {% if not followers_file_exists %}
+  <div class="col-12 text-center">
+    <label for="description" class="form-label">Before sharing, We need to <b>download</b> your followers list to start sharing your post to all followers</label>
+    <label for="description" class="form-label"><b>NOTE:</b> You can be <b>logged out</b> from your Instagram account on your phone for once, but you can log in again.</label>
+    <br>
+    <a href="/download_followers" class="btn btn-secondary custom-button">Download Now</a>
+  </div>
+  {% endif %}
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+        <form action="{% url 'share_to_followers' %}" id="postForm" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <label for="post_url" class="form-label">Post URL</label>
+                    <input type="url" name="post_url" id="post_url" placeholder="Enter post URL" class="form-control" required>
+                </div>
+          
+                <div class="col-12">
+                    <label for="custom_message" class="form-label">Custom Message</label>
+                    <textarea name="custom_message" id="custom_message" placeholder="Enter your message without emojies" class="form-control" cols="30" rows="4" required></textarea>
+                </div>
+
+                <div class="col-12"> 
+                    <button type="submit" class="btn btn-primary">Share Now</button>
+                </div>
+          
+            </div>
+          
+          </form>
+        </div>
+    </div>
+
+    <style>
+      .custom-button {
+        width: 200px; /* Adjust the width value as needed */
+        height: 40px;
+        background-color: #191970; /* Dark deep blue color */
+        color: #ffffff; /* White text color */
+        border: none; /* Remove button border */
+    }
+    .custom-button:hover {
+      background-color: #000080; /* Darker shade on hover */
+  }
+    </style>
+{% endblock main %}

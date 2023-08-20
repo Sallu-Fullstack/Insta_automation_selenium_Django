@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% elif message.tags == 'success' %}
+      <div class="alert alert-success mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% endif %}
+  {% endfor %}
+{% endif %}
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Login To Start Instagram Automation</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead"><b>Note: </b>Automation will work only for Instagram Accounts without Two Factor Authentication. If you have <b>2Factor Autentication</b> please remove it and Login again.</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+  {% if infoSubmitObj %}
+  <div class="col-8 alert alert-success" role="alert">
+  {{ infoSubmitObj }}
+  </div>
+  {% endif %}
+  
+  {% if infoErrorsObj %}
+  <div class="col-8 alert alert-danger" role="alert">
+  {{ infoErrorsObj.0.message }}
+  </div>
+  {% endif %}
+  
+    <div class="col-12 col-md-8">
+        <form action="{% url 'user_login' %}" id="postForm" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <label for="username" class="form-label">Instagram Username</label>
+                    <textarea name="username" id="username" placeholder="Enter your username" class="form-control single-row-textarea" cols="30" rows="1">{% if request.session.input_username %}{{ request.session.input_username }}{% endif %}</textarea>
+                  </div>
+          
+                  <div class="col-12">
+                    <label for="password" class="form-label">Instagram Password</label>
+                    <div class="password-container">
+                        <input type="password" name="password" id="password" placeholder="Enter your password" value="{% if request.session.input_password %}{{ request.session.input_password }}{% endif %}" class="form-control single-row-textarea">
+                        <span class="password-toggle" onclick="togglePasswordVisibility()"></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                  <label for="timezone">Timezone</label>
+                  <br>
+                  <select id="timezone" name="timezone" required>
+                    <option value="" disabled selected>Select your timezone</option>
+                    <option value="America/New_York" {% if 'America/New_York' in request.session.timezone_offset %}selected{% endif %}>United States - Eastern Time Zone</option>
+                    <option value="Europe/London" {% if 'Europe/London' in request.session.timezone_offset %}selected{% endif %}>United Kingdom - Greenwich Mean Time</option>
+                    <option value="Australia/Sydney" {% if 'Australia/Sydney' in request.session.timezone_offset %}selected{% endif %}>Australia - Australian Eastern Standard Time</option>
+                    <option value="Asia/Tokyo" {% if 'Asia/Tokyo' in request.session.timezone_offset %}selected{% endif %}>Japan - Japan Standard Time</option>
+                    <option value="Asia/Shanghai" {% if 'Asia/Shanghai' in request.session.timezone_offset %}selected{% endif %}>China - China Standard Time</option>
+                    <option value="Europe/Moscow" {% if 'Europe/Moscow' in request.session.timezone_offset %}selected{% endif %}>Russia - Moscow Standard Time</option>
+                    <option value="America/Sao_Paulo" {% if 'America/Sao_Paulo' in request.session.timezone_offset %}selected{% endif %}>Brazil - Brasília Time</option>
+                    <option value="America/Vancouver" {% if 'America/Vancouver' in request.session.timezone_offset %}selected{% endif %}>Canada - Pacific Time Zone</option>
+                    <option value="Europe/Berlin" {% if 'Europe/Berlin' in request.session.timezone_offset %}selected{% endif %}>Germany - Central European Time</option>
+                    <option value="Asia/Kolkata" {% if 'Asia/Kolkata' in request.session.timezone_offset %}selected{% endif %}>India - Indian Standard Time</option>
+                    <!-- Add more timezone options based on your requirements -->
+                  </select>
+                </div>
+                
+
+          
+              <div class="col-12"> 
+                <button type="submit" onclick="schedulePost()" class="btn btn-primary">Login</button>
+              </div>
+
+          
+            </div>
+          
+          </form>
+        </div>
+    </div>
+
+{% endblock main %}
+
+

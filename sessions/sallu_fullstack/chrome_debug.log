@@ -1,0 +1,6 @@
+[22704:19388:0802/131438.087:WARNING:chrome_main_delegate.cc(594)] This is Chrome version 115.0.5790.110 (not a warning)
+[22704:19388:0802/131438.178:INFO:chrome_browser_cloud_management_controller.cc(167)] Starting CBCM Controller Initialization
+[22704:19388:0802/131438.178:INFO:chrome_browser_cloud_management_controller.cc(195)] No machine level policy manager exists.
+[22704:19388:0802/131440.049:INFO:CONSOLE(0)] "Error with Permissions-Policy header: Unrecognized feature: 'ambient-light-sensor'.", source:  (0)
+[22704:19388:0802/131441.264:INFO:CONSOLE(0)] "[DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o", source: https://www.instagram.com/ (0)
+[22704:19388:0802/131443.834:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

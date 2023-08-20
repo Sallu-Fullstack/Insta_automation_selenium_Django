@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% elif message.tags == 'success' %}
+      <div class="alert alert-success mt-3" role="alert">
+        {{ message }}
+      </div>
+      {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Schedule Your Posts</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead">Unlock the power of post scheduling and enjoy hassle-free sharing. Fill the required fields and let your creativity shine across time zones!</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+  {% if infoSubmitObj %}
+  <div class="col-8 alert alert-success" role="alert">
+  {{ infoSubmitObj }}
+  </div>
+  {% endif %}
+  
+  {% if infoErrorsObj %}
+  <div class="col-8 alert alert-danger" role="alert">
+  {{ infoErrorsObj.0.message }}
+  </div>
+  {% endif %}
+  
+    <div class="col-12 col-md-8">
+        <form action="{% url 'schedule_posts' %}" id="postForm" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+
+              <div class="col-12">
+                <label for="description" class="form-label">Instagram Username</label>
+                <textarea name="username" id="username" class="form-control single-row-textarea" cols="30" rows="1" required >{% if request.session.input_username %}{{ request.session.input_username }}{% endif %}</textarea>
+              </div>
+          
+              <div class="col-12">
+                <label for="image">Poster Image</label>
+                <input type="file" class="form-control" name="image" accept="image/*" required>
+              </div>
+
+              <div class="col-12">
+                <label for="description" class="form-label">Caption</label>
+                <textarea name="caption" id="caption" class="form-control" cols="30" rows="4" required></textarea>
+              </div>
+
+              <div class="col-12">
+                <label for="scheduled_datetime" class="form-label">Schedule Date and Time</label>
+                <input type="datetime-local" class="form-control" name="scheduled_datetime" required>
+            </div>
+          
+              <div class="col-12">
+                
+                <button type="submit" onclick="schedulePost()" class="btn btn-primary">Submit Post</button>
+                <p class="small mt-2 text-muted">Note: After submitting please click on <b>schedule now</b> to schedule posts.</p>
+              </div>
+
+          
+            </div>
+          
+          </form>
+          <br>
+          <br>
+          <div class="col-12 text-center">
+            <br>
+            <a href="/post_insta" class="btn btn-secondary custom-button">Schedule Now</a>
+            <p class="small mt-2 text-muted">Note: Once your Scheduled time arrives a new chrome tab will start the automation. Don't click anywhere during automation.</p>
+        </div>        
+        </div>
+    </div>
+
+    <style>
+      .custom-button {
+        width: 200px; /* Adjust the width value as needed */
+        height: 40px;
+        background-color: #191970; /* Dark deep blue color */
+        color: #ffffff; /* White text color */
+        border: none; /* Remove button border */
+    }
+    .custom-button:hover {
+      background-color: #000080; /* Darker shade on hover */
+  }
+    </style>
+{% endblock main %}

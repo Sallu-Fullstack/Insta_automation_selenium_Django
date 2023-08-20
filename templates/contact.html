@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center">Let's Connect</h2>
+          <p class="text-center mb-4">Have a project in mind? Questions about collaboration? I'd love to hear from you.</p>
+          <form id="contactForm" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number (with country code)</label>
+              <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+            </div>
+            <div class="mb-3">
+              <label for="purpose" class="form-label">Purpose</label>
+              <select class="form-select" id="purpose" name="purpose" required>
+                <option value="" selected disabled>Select purpose</option>
+                <option value="hire">To Hire me</option>
+                <option value="collaboration">Make project collaborations</option>
+                <option value="help">Asking for help</option>
+                <option value="help">Asking to update</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="companyName" class="form-label">Company Name</label>
+              <input type="text" class="form-control" id="companyName" name="companyName">
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+              <button type="button" onclick="sendWhatsAppMessage()" class="btn btn-primary">Submit</button>
+              <p class="small mt-2 text-muted">Note: Your message will be sent via WhatsApp.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function sendWhatsAppMessage() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const purpose = document.getElementById('purpose').value;
+      const companyName = document.getElementById('companyName').value;
+      const message = document.getElementById('message').value;
+  
+      // Check if required fields are filled
+      if (!name || !email || !phoneNumber || !purpose || !message) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+  
+      // Replace 'YOUR_WHATSAPP_NUMBER' with your actual WhatsApp number
+      const whatsappNumber = '+916374913298';
+  
+      const whatsappMessage = `Name: ${name}%0AEmail: ${email}%0APhone Number: ${phoneNumber}%0APurpose: ${purpose}%0ACompany Name: ${companyName}%0AMessage: ${message}`;
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${whatsappMessage}`;
+  
+      window.open(whatsappURL);
+    }
+  </script>
+  
+
+{% endblock main %}
