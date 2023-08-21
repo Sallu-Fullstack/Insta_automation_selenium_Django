@@ -10,11 +10,15 @@ import datetime
 from datetime import datetime as dt
 import pytz
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
 from django.contrib.sessions.middleware import SessionMiddleware
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 import pyautogui
 import os
+from django.conf import settings
 from .models import InstagramPost, InstagramLogin
 
 
@@ -79,8 +83,13 @@ def user_login(request):
         timezone = request.POST.get('timezone')
         print("Received login request for user:", input_username)
       
-        chromedriver_path = "C:/Users/HP/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-        driver = webdriver.Chrome(executable_path=chromedriver_path)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--no-sandbox")
+        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")
+
+        chromedriver_path = str(settings.BASE_DIR/"chromedriver.exe")
+        driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
         driver.get("https://www.instagram.com/")
         time.sleep(3)
         
@@ -271,84 +280,105 @@ def post_insta(request):
 
 def execute_instagram_automation(i, post, input_username, input_password):
 
-    chromedriver_path = "C:/Users/HP/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-    driver = webdriver.Chrome(executable_path=chromedriver_path)
-    driver.get("https://www.instagram.com/")
-    time.sleep(3)
-    # Rest of your automation code ...
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
 
-    username_field = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[1]/div/label/input""")
-    username_field.send_keys(input_username)
-
-    password_field = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input""")
-    password_field.send_keys(input_password)
-    password_field.send_keys(Keys.ENTER)
-    time.sleep(6)
-
-    print(f"Logged In Successfully as {input_username}")
-
-    #Click Dont Save Now Option
-    not_element = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/div[1]/div[2]/section/main/div/div/div/div/div")
-    not_element.click()
-
-    # Turn off Notification (if present)
-    try:
-        notification_bar = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div")
-        if notification_bar:
-            not_now = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[2]").click()
-            time.sleep(1)
-    except Exception as e:
-        print("No notification bar found. Continuing automation.")
+    chromedriver_path = str(settings.BASE_DIR/"chromedriver.exe")
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
     
-    #Create Post
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div[7]/div""").click()
-    time.sleep(1)
+    try:
+        driver.get("https://www.instagram.com/")
+        time.sleep(3)
 
-    #Select Media (Add from Computer)
-    select_path = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div/button""").click()
-    time.sleep(2)
+        username_field = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[1]/div/label/input""")
+        username_field.send_keys(input_username)
 
-    # Use pyautogui to interact with the file manager dialog and enter the file path
-    image_path = post.image.path  # Use the 'path' attribute of the ImageFieldFile object
-    print("Image Path:", image_path)
-    pyautogui.write(image_path)
-    pyautogui.press("enter")
-    time.sleep(1)
-    print(f"The Image path is {image_path}")
+        password_field = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input""")
+        password_field.send_keys(input_password)
+        password_field.send_keys(Keys.ENTER)
+        time.sleep(6)
 
-    #Click Image Original Size
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div[2]/div/button""").click()
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div[1]/div/div[1]""").click()
-    time.sleep(1)
+        print(f"Logged In Successfully as {input_username}")
 
-    #Click Next
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
-    time.sleep(1)
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
-    time.sleep(1)
+        #Click Dont Save Now Option
+        not_element = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/div[1]/div[2]/section/main/div/div/div/div/div")
+        not_element.click()
 
-    #Write Caption for Post
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div[1]/p""").click()
-    caption = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div[1]/p""")
-    time.sleep(1)
-    caption.send_keys(post.caption)
+        # Turn off Notification (if present)
+        try:
+            notification_bar = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div")
+            if notification_bar:
+                not_now = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[2]").click()
+                time.sleep(1)
+        except Exception as e:
+            print("No notification bar found. Continuing automation.")
+        
+        #Create Post
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div[7]/div""").click()
+        time.sleep(1)
 
-    # caption_text = emoji.demojize(post_captions[i])
-    # caption.send_keys(caption_text)
-    print(f"The Caption is {post.caption}")
+        #Select Media (Add from Computer)
+        select_path = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div[2]/div/button""").click()
+        time.sleep(2)
 
-    #Dropdown Advance Settings
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[5]""").click()
-    time.sleep(1)
+        # Use pyautogui to interact with the file manager dialog and enter the file path
+        image_path = post.image.path  # Use the 'path' attribute of the ImageFieldFile object
+        print("Image Path:", image_path)
+        pyautogui.write(image_path)
+        pyautogui.press("enter")
+        time.sleep(1)
+        print(f"The Image path is {image_path}")
 
-    #Hide Like Counts:
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[5]/div[2]/div/div[1]/div/div[1]/label/span""").click()
-    time.sleep(1)
+        #Click Image Original Size
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div[2]/div/button""").click()
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div[1]/div/div[1]""").click()
+        time.sleep(1)
 
-    #Share Post
-    driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
-    print(f"Post {i + 1} shared successfully..!")
-    time.sleep(3)
+        #Click Next
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
+        time.sleep(1)
+
+        #Write Caption for Post
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div[1]/p""").click()
+        caption = driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/div[1]/p""")
+        time.sleep(1)
+        caption.send_keys(post.caption)
+
+        # caption_text = emoji.demojize(post_captions[i])
+        # caption.send_keys(caption_text)
+        print(f"The Caption is {post.caption}")
+
+        #Dropdown Advance Settings
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[5]""").click()
+        time.sleep(1)
+
+        #Hide Like Counts:
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[5]/div[2]/div/div[1]/div/div[1]/label/span""").click()
+        time.sleep(1)
+
+        #Share Post
+        driver.find_element_by_xpath("""/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div""").click()
+        print(f"Post {i + 1} shared successfully..!")
+        time.sleep(3)
+
+        # Find the success message and wait for it
+        success_message_xpath = "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div/div[2]/div/span"
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, success_message_xpath))
+        )
+
+        # Get the success message element
+        success_message_element = driver.find_element(By.XPATH, success_message_xpath)
+
+        # Print the success message
+        print("Success message:", success_message_element.text)
+    finally:
+        # Quit the driver
+        driver.quit()
 
 
 def explore_scheduled(request):
@@ -372,8 +402,14 @@ def multiple_likes(request):
             account_name = request.POST.get('account_name')
             post_number = int(request.POST.get('post_number'))
             print(account_name)
-            chromedriver_path = "C:/Users/HP/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-            driver = webdriver.Chrome(executable_path=chromedriver_path)
+
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument("--no-sandbox")
+            # chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-gpu")
+
+            chromedriver_path = str(settings.BASE_DIR/"chromedriver.exe")
+            driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
             driver.get("https://www.instagram.com/")
             time.sleep(3)
             # Rest of your automation code ...
@@ -531,8 +567,13 @@ def share_to_followers(request):
             user_password = request.session['input_password']
 
 
-            chromedriver_path = "C:/Users/HP/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-            driver = webdriver.Chrome(executable_path=chromedriver_path)
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument("--no-sandbox")
+            # chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-gpu")
+
+            chromedriver_path = str(settings.BASE_DIR/"chromedriver.exe")
+            driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
 
             try:
                 driver.get("https://www.instagram.com/")
