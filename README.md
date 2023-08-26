@@ -7,6 +7,8 @@ Automate various Instagram actions using Python and Selenium.
 ## Overview
 This project aims to provide a set of tools and functionalities to automate Instagram actions using Python and the Selenium web automation framework. The project includes features like scheduling posts, liking multiple posts, sharing posts with followers, downloading followers' usernames, and more. The automation is performed using the Chrome WebDriver, enabling seamless interaction with the Instagram web interface.
 
+# View Live Project Here: [🎉View Now](http://sallu2instaautomation.pythonanywhere.com/)
+
 ## Instagram Automation Features 📲
 
 Explore the powerful Instagram automation features that are integrated into this project:
